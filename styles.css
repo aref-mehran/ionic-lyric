@@ -1,0 +1,4 @@
+.App{}
+.menu{ display:flex; background: #666;}
+.menu li{ list-style: none; margin: 10px;}
+.menu li  a{text-decoration: none; color: #CCC}
