@@ -116,6 +116,7 @@ const Player: React.FC = () => {
                   color="green.500"
                   fontStyle="italic"
                   value="frfr"
+                  cursor="pointer"
                   onClick={async (e) => {
                     let s = document.getElementById("playerId");
                     s.currentTime = data.seek_time;
