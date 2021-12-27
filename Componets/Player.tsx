@@ -4,8 +4,7 @@ import {
   SimpleGrid,
   List,
   ListItem,
-  Box,
-  Button
+  Box
 } from "@chakra-ui/react";
 
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
@@ -14,13 +13,6 @@ const Player: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <div onClick={(e) => console.log(e.target)}>
-          i am parent
-          <div id="child-element">
-            <p>I am a child element</p>
-          </div>
-        </div>
-
         <IonToolbar>
           <IonTitle>پخش آهنگ</IonTitle>
         </IonToolbar>
@@ -44,17 +36,11 @@ const Player: React.FC = () => {
               color="green.500"
               fontStyle="italic"
               value="frfr"
+              onClick={(e) => {
+                let s = document.getElementById("playerId");
+                s.currentTime = 5;
+              }}
             >
-              <div></div>
-              <button
-                value="hello!"
-                onClick={(e) => {
-                  let s = document.getElementById("playerId");
-                  s.currentTime = 5;
-                }}
-              >
-                Click me!
-              </button>
               english
             </ListItem>
             <ListItem
