@@ -24,7 +24,7 @@ const Player: React.FC = () => {
         <SimpleGrid columns={2} spacingX={1} spacingY={1}>
           <Box ml="25%" mr="25%">
             <ReactAudioPlayer
-              src="/files/George_Gershwin_playing_Rhapsody_in_Blue.ogg"
+              src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
               controls
             />
           </Box>
