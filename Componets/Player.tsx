@@ -13,7 +13,9 @@ import {
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 
 const Player: React.FC = () => {
-  let lyric_parts = [];
+  // alert('start')
+
+  const [lyric_parts, set_lyric_parts] = React.useState([]);
   let items = [
     "dfdf",
     "dfd",
@@ -61,25 +63,30 @@ const Player: React.FC = () => {
       let txt_content = await response.text();
       let lyric_lines = txt_content.split("\n");
 
+      let arr = [];
       for (let line of lyric_lines) {
         // alert(line);
 
         let sentence = line.split("]")[1];
-        let seek_time = Number(
-          line.split("]")[0].split("[")[1].split(":")[1]
-        ).toFixed(2);
-        lyric_parts.push({ seek_time: seek_time, sentence: sentence });
+        let time_str = line.split("]")[0].split("[")[1];
+        let min = Number(time_str.split(":")[0]);
+        let sec = Number(time_str.split(":")[1]);
+        let seek_time = min * 60 + sec;
+        arr.push({ seek_time: seek_time, sentence: sentence });
       }
+
+      set_lyric_parts(arr);
+      // alert("use effect");
 
       setLoading(false);
 
       // alert(lyric_parts[0].sentence);
     }
     fetchLyric();
-  });
+  }, []);
 
   if (isLoading) return "Loading...";
-
+  // alert(lyric_parts);
   return (
     <IonPage>
       <IonHeader>
@@ -100,7 +107,7 @@ const Player: React.FC = () => {
         </SimpleGrid>
         <SimpleGrid mt={10} columns={2} spacingX={1} spacingY={1} height={400}>
           <List overflow="scroll">
-            {items.map((data, idx) => {
+            {lyric_parts.map((data, idx) => {
               return (
                 <ListItem
                   fontWeight="bold"
@@ -109,12 +116,15 @@ const Player: React.FC = () => {
                   color="green.500"
                   fontStyle="italic"
                   value="frfr"
-                  // onClick={async (e) => {
-                  //   let s = document.getElementById("playerId");
-                  //   s.currentTime = data.seek_time;
-                  // }}
+                  onClick={async (e) => {
+                    let s = document.getElementById("playerId");
+                    s.currentTime = data.seek_time;
+                  }}
                 >
-                  'SDDDD'
+                  {data.sentence}
+                  <br />
+                  {data.seek_time}
+                  <br />
                 </ListItem>
               );
             })}
