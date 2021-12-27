@@ -1,4 +1,5 @@
 import React from "react";
+import textfile from "../src/assets/count_me.txt";
 import {
   ChakraProvider,
   SimpleGrid,
@@ -24,7 +25,7 @@ const Player: React.FC = () => {
           <Box ml="25%" mr="25%">
             <audio
               id="playerId"
-              src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
+              src="https://dl.musicdel.ir/Music/1400/05/bruno_mars_count_on%20me%20128.mp3"
               controls
               autoPlay
             />
@@ -41,9 +42,12 @@ const Player: React.FC = () => {
                   color="green.500"
                   fontStyle="italic"
                   value="frfr"
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     let s = document.getElementById("playerId");
                     s.currentTime = idx;
+                    let response = await fetch(textfile);
+                    let txt_content = await response.text();
+                    console.log(txt_content);
                   }}
                 >
                   {data}
