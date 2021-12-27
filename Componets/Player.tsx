@@ -11,49 +11,36 @@ import {
 } from "@chakra-ui/react";
 
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import { setInterval } from "timers";
 
 const Player: React.FC = () => {
-  // alert('start')
+  alert("start");
 
   const [lyric_parts, set_lyric_parts] = React.useState([]);
-  let items = [
-    "dfdf",
-    "dfd",
-    "dfdf",
-    "dfdf",
-    "dfd",
-    "dfdf",
-    "dfdf",
-    "dfd",
-    "dfdf",
-    "dfdf",
-    "dfd",
-    "dfdf",
-    "dfdf",
-    "dfd",
-    "dfdf",
-    "dfdf",
-    "dfd",
-    "dfdf",
-    "dfdf",
-    "dfd",
-    "dfdf",
-    "dfdf",
-    "dfd",
-    "dfdf",
-    "dfdf",
-    "dfd",
-    "dfdf",
-    "dfdf",
-    "dfd",
-    "dfdf",
-    "dfdf",
-    "dfd",
-    "dfdf",
-    "dfdf",
-    "dfd",
-    "dfdf"
-  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      let tempTime = document.getElementById("playerId").currentTime;
+      let index = 0;
+
+      console.log(lyric_parts);
+      let lyric_time_arr = lyric_parts.map((data) => {
+        return data.seek_time;
+      });
+
+      if (lyric_time_arr.indexOf(tempTime) == -1) {
+        index = [...lyric_time_arr, tempTime]
+          .sort((a, b) => a - b)
+          .indexOf(tempTime);
+      } else {
+        index = lyric_time_arr.indexOf(tempTime);
+      }
+      console.log(index, tempTime);
+    }, 1000);
+
+    // clearing interval
+    return () => clearInterval(timer);
+  }, [lyric_parts]);
 
   const [isLoading, setLoading] = React.useState(true);
 
@@ -76,7 +63,7 @@ const Player: React.FC = () => {
       }
 
       set_lyric_parts(arr);
-      // alert("use effect");
+      alert("use effect");
 
       setLoading(false);
 
