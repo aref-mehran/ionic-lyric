@@ -24,6 +24,7 @@ const Player: React.FC = () => {
               id="playerId"
               src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
               controls
+              autoPlay
             />
           </Box>
         </SimpleGrid>
