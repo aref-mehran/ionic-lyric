@@ -13,7 +13,7 @@ import { IonReactRouter } from "@ionic/react-router";
 import { home, apps, map, person } from "ionicons/icons";
 import Home from "../Componets/Home/Home";
 import AppMenu from "../Componets/Apps/TabAppMenu";
-import Tab3 from "../Componets/Tab3";
+import Player from "../Componets/Player";
 import Cabinet from "../Componets/LK/LK";
 //import React from "react";
 /* Core CSS required for Ionic components to work properly */
@@ -54,8 +54,8 @@ const App: React.FC = () => (
           <Route exact path="/tab2">
             <AppMenu />
           </Route>
-          <Route path="/tab3">
-            <Tab3 />
+          <Route path="/player">
+            <Player />
           </Route>
           <Route path="/tab4">
             <Cabinet />
@@ -73,7 +73,7 @@ const App: React.FC = () => (
             <IonIcon icon={apps} />
             <IonLabel>آهنگ ها</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
+          <IonTabButton tab="Player" href="/Player">
             <IonIcon icon={map} />
             <IonLabel>پلیر</IonLabel>
           </IonTabButton>
