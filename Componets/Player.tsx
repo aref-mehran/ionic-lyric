@@ -10,6 +10,8 @@ import {
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 
 const Player: React.FC = () => {
+  let items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
+
   return (
     <IonPage>
       <IonHeader>
@@ -30,20 +32,24 @@ const Player: React.FC = () => {
         </SimpleGrid>
         <SimpleGrid mt={10} columns={2} spacingX={1} spacingY={1} height={400}>
           <List overflow="scroll">
-            <ListItem
-              fontWeight="bold"
-              textAlign="center"
-              fontSize={20}
-              color="green.500"
-              fontStyle="italic"
-              value="frfr"
-              onClick={(e) => {
-                let s = document.getElementById("playerId");
-                s.currentTime = 5;
-              }}
-            >
-              english
-            </ListItem>
+            {items.map((data, idx) => {
+              return (
+                <ListItem
+                  fontWeight="bold"
+                  textAlign="center"
+                  fontSize={20}
+                  color="green.500"
+                  fontStyle="italic"
+                  value="frfr"
+                  onClick={(e) => {
+                    let s = document.getElementById("playerId");
+                    s.currentTime = idx;
+                  }}
+                >
+                  {data}
+                </ListItem>
+              );
+            })}
             <ListItem
               fontWeight="bold"
               textAlign="center"
