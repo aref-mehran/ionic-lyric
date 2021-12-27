@@ -4,18 +4,23 @@ import {
   SimpleGrid,
   List,
   ListItem,
-  Box
+  Box,
+  Button
 } from "@chakra-ui/react";
 
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
-//import ExploreContainer from '../components/ExploreContainer';
-//import './Tab3.css';
-import ReactAudioPlayer from "react-audio-player";
 
 const Player: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
+        <div onClick={(e) => console.log(e.target)}>
+          i am parent
+          <div id="child-element">
+            <p>I am a child element</p>
+          </div>
+        </div>
+
         <IonToolbar>
           <IonTitle>پخش آهنگ</IonTitle>
         </IonToolbar>
@@ -23,7 +28,8 @@ const Player: React.FC = () => {
       <ChakraProvider resetCSS>
         <SimpleGrid columns={2} spacingX={1} spacingY={1}>
           <Box ml="25%" mr="25%">
-            <ReactAudioPlayer
+            <audio
+              id="playerId"
               src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
               controls
             />
@@ -37,7 +43,18 @@ const Player: React.FC = () => {
               fontSize={20}
               color="green.500"
               fontStyle="italic"
+              value="frfr"
             >
+              <div></div>
+              <button
+                value="hello!"
+                onClick={(e) => {
+                  let s = document.getElementById("playerId");
+                  s.currentTime = 5;
+                }}
+              >
+                Click me!
+              </button>
               english
             </ListItem>
             <ListItem
