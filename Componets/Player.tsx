@@ -14,12 +14,10 @@ import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import { setInterval } from "timers";
 
 const Player: React.FC = () => {
-  alert("start");
-
   const [lyric_parts, set_lyric_parts] = React.useState([]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    const timer = setInterval((lyric_parts) => {
       let tempTime = document.getElementById("playerId").currentTime;
       let index = 0;
 
@@ -40,7 +38,7 @@ const Player: React.FC = () => {
 
     // clearing interval
     return () => clearInterval(timer);
-  }, [lyric_parts]);
+  }, []);
 
   const [isLoading, setLoading] = React.useState(true);
 
@@ -52,8 +50,6 @@ const Player: React.FC = () => {
 
       let arr = [];
       for (let line of lyric_lines) {
-        // alert(line);
-
         let sentence = line.split("]")[1];
         let time_str = line.split("]")[0].split("[")[1];
         let min = Number(time_str.split(":")[0]);
@@ -63,17 +59,13 @@ const Player: React.FC = () => {
       }
 
       set_lyric_parts(arr);
-      alert("use effect");
 
       setLoading(false);
-
-      // alert(lyric_parts[0].sentence);
     }
     fetchLyric();
   }, []);
 
   if (isLoading) return "Loading...";
-  // alert(lyric_parts);
   return (
     <IonPage>
       <IonHeader>
