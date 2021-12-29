@@ -2,6 +2,8 @@ import React from "react";
 import { useEffect, useRef, useLayoutEffect } from "react";
 
 import textfile from "../src/assets/count_me.txt";
+import textfile_fa from "../src/assets/count_me_fa.txt";
+
 import {
   ChakraProvider,
   SimpleGrid,
@@ -37,6 +39,8 @@ function useInterval(callback: () => void, delay: number | null) {
 
 const Player: React.FC = () => {
   const [lyric_parts, set_lyric_parts] = React.useState([]);
+  const [lyric_parts_fa, set_lyric_parts_fa] = React.useState([]);
+
   const [lyric_curr_index, set_lyric_curr_index] = React.useState(0);
 
   function setCurrentLyric() {
@@ -51,7 +55,7 @@ const Player: React.FC = () => {
       return data.seek_time;
     });
 
-    if (lyric_time_arr.indexOf(tempTime) == -1) {
+    if (lyric_time_arr.indexOf(tempTime) === -1) {
       index =
         [...lyric_time_arr, tempTime].sort((a, b) => a - b).indexOf(tempTime) -
         1;
@@ -82,24 +86,30 @@ const Player: React.FC = () => {
   // }, []);
 
   const [isLoading, setLoading] = React.useState(true);
+  async function readLyricFile(file) {
+    let response = await fetch(file);
+    let txt_content = await response.text();
+    let lyric_lines = txt_content.split("\n");
 
+    let arr = [];
+    for (let line of lyric_lines) {
+      let sentence = line.split("]")[1];
+      let time_str = line.split("]")[0].split("[")[1];
+      let min = Number(time_str.split(":")[0]);
+      let sec = Number(time_str.split(":")[1]);
+      let seek_time = min * 60 + sec;
+      arr.push({ seek_time: seek_time, sentence: sentence });
+    }
+
+    return arr;
+  }
   useEffect(() => {
     async function fetchLyric() {
-      let response = await fetch(textfile);
-      let txt_content = await response.text();
-      let lyric_lines = txt_content.split("\n");
-
-      let arr = [];
-      for (let line of lyric_lines) {
-        let sentence = line.split("]")[1];
-        let time_str = line.split("]")[0].split("[")[1];
-        let min = Number(time_str.split(":")[0]);
-        let sec = Number(time_str.split(":")[1]);
-        let seek_time = min * 60 + sec;
-        arr.push({ seek_time: seek_time, sentence: sentence });
-      }
-
+      let arr = await readLyricFile(textfile);
       set_lyric_parts(arr);
+
+      let arr_fa = await readLyricFile(textfile_fa);
+      set_lyric_parts_fa(arr_fa);
 
       setLoading(false);
     }
@@ -126,7 +136,7 @@ const Player: React.FC = () => {
             />
           </Box>
         </SimpleGrid>
-        <SimpleGrid mt={10} columns={2} spacingX={1} spacingY={1} height={400}>
+        <SimpleGrid mt={10} columns={1} spacingX={1} spacingY={1} height={400}>
           <List overflow="scroll">
             {lyric_parts.map((data, idx) => {
               return (
@@ -146,7 +156,8 @@ const Player: React.FC = () => {
                     s.play();
                   }}
                 >
-                  {data.sentence}
+                  {data.sentence}{" "}
+                  {lyric_curr_index === idx ? lyric_parts_fa[idx].sentence : ""}
                   <br />
                   <br />
                 </ListItem>
@@ -157,27 +168,6 @@ const Player: React.FC = () => {
               textAlign="center"
               fontSize={20}
               color="black"
-              fontStyle="italic"
-              opacity={0.87}
-            >
-              list
-            </ListItem>
-          </List>
-          <List overflow="scroll">
-            <ListItem
-              fontWeight="bold"
-              textAlign="center"
-              fontSize={20}
-              color="blue.500"
-              fontStyle="italic"
-            >
-              persian
-            </ListItem>
-            <ListItem
-              fontWeight="bold"
-              textAlign="center"
-              fontSize={20}
-              color="green.500"
               fontStyle="italic"
               opacity={0.87}
             >
