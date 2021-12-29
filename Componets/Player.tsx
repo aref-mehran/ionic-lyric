@@ -40,7 +40,11 @@ const Player: React.FC = () => {
   const [lyric_curr_index, set_lyric_curr_index] = React.useState(0);
 
   function setCurrentLyric() {
-    let tempTime = document.getElementById("playerId").currentTime;
+    let playerEl = document.getElementById("playerId");
+    if (playerEl.paused) {
+      return;
+    }
+    let tempTime = playerEl.currentTime;
     let index = 0;
 
     console.log(lyric_parts);
@@ -59,8 +63,11 @@ const Player: React.FC = () => {
 
     let el = document.getElementById("item" + index);
     if (el) {
-      el.scrollIntoView();
-      el.style.color = "green.500";
+      el.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest"
+      });
     }
     console.log(index, tempTime);
   }
@@ -68,7 +75,7 @@ const Player: React.FC = () => {
   //https://usehooks-ts.com/react-hook/use-interval
   useInterval(() => {
     setCurrentLyric();
-  }, 1000);
+  }, 500);
 
   // useEffect(() => {
 
@@ -116,6 +123,7 @@ const Player: React.FC = () => {
               id="playerId"
               src="https://dl.musicdel.ir/Music/1400/05/bruno_mars_count_on%20me%20128.mp3"
               controls
+              loop
               // autoPlay
             />
           </Box>
@@ -130,18 +138,18 @@ const Player: React.FC = () => {
                   fontWeight="bold"
                   textAlign="center"
                   fontSize={20}
-                  color="black"
+                  color={lyric_curr_index === idx ? "green" : "black"}
                   fontStyle="italic"
                   value="frfr"
                   cursor="pointer"
                   onClick={async (e) => {
                     let s = document.getElementById("playerId");
                     s.currentTime = data.seek_time;
+                    s.play();
                   }}
                 >
                   {data.sentence}
                   <br />
-                  {data.seek_time}
                   <br />
                 </ListItem>
               );
