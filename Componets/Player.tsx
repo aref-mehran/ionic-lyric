@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useRef, useLayoutEffect } from "react";
 
 import textfile from "../src/assets/count_me.txt";
 import {
@@ -14,55 +14,63 @@ import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import { setInterval } from "timers";
 
 function useInterval(callback: () => void, delay: number | null) {
-  const savedCallback = useRef(callback)
+  const savedCallback = useRef(callback);
 
   // Remember the latest callback if it changes.
   useLayoutEffect(() => {
-    savedCallback.current = callback
-  }, [callback])
+    savedCallback.current = callback;
+  }, [callback]);
 
   // Set up the interval.
   useEffect(() => {
     // Don't schedule if no delay is specified.
     // Note: 0 is a valid value for delay.
     if (!delay && delay !== 0) {
-      return
+      return;
     }
 
-    const id = setInterval(() => savedCallback.current(), delay)
+    const id = setInterval(() => savedCallback.current(), delay);
 
-    return () => clearInterval(id)
-  }, [delay])
+    return () => clearInterval(id);
+  }, [delay]);
 }
 
 const Player: React.FC = () => {
   const [lyric_parts, set_lyric_parts] = React.useState([]);
+  const [lyric_curr_index, set_lyric_curr_index] = React.useState(0);
 
-//https://usehooks-ts.com/react-hook/use-interval
-useInterval(() => {
+  function setCurrentLyric() {
+    let tempTime = document.getElementById("playerId").currentTime;
+    let index = 0;
 
-      let tempTime = document.getElementById("playerId").currentTime;
-      let index = 0;
+    console.log(lyric_parts);
+    let lyric_time_arr = lyric_parts.map((data) => {
+      return data.seek_time;
+    });
 
-      console.log(lyric_parts);
-      let lyric_time_arr = lyric_parts.map((data) => {
-        return data.seek_time;
-      });
+    if (lyric_time_arr.indexOf(tempTime) == -1) {
+      index =
+        [...lyric_time_arr, tempTime].sort((a, b) => a - b).indexOf(tempTime) -
+        1;
+    } else {
+      index = lyric_time_arr.indexOf(tempTime);
+    }
+    set_lyric_curr_index(index);
 
-      if (lyric_time_arr.indexOf(tempTime) == -1) {
-        index = [...lyric_time_arr, tempTime]
-          .sort((a, b) => a - b)
-          .indexOf(tempTime);
-      } else {
-        index = lyric_time_arr.indexOf(tempTime);
-      }
-      console.log(index, tempTime);
- 
+    let el = document.getElementById("item" + index);
+    if (el) {
+      el.scrollIntoView();
+      el.style.color = "green.500";
+    }
+    console.log(index, tempTime);
+  }
 
-    }, 1000);
+  //https://usehooks-ts.com/react-hook/use-interval
+  useInterval(() => {
+    setCurrentLyric();
+  }, 1000);
 
   // useEffect(() => {
-       
 
   //   // clearing interval
   //   // return () => {clearInterval(timer);alert('clreaed')};
@@ -117,10 +125,12 @@ useInterval(() => {
             {lyric_parts.map((data, idx) => {
               return (
                 <ListItem
+                  key={idx}
+                  id={"item" + idx}
                   fontWeight="bold"
                   textAlign="center"
                   fontSize={20}
-                  color="green.500"
+                  color="black"
                   fontStyle="italic"
                   value="frfr"
                   cursor="pointer"
@@ -140,7 +150,7 @@ useInterval(() => {
               fontWeight="bold"
               textAlign="center"
               fontSize={20}
-              color="green.500"
+              color="black"
               fontStyle="italic"
               opacity={0.87}
             >
