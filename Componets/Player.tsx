@@ -156,9 +156,12 @@ const Player: React.FC = () => {
                     s.play();
                   }}
                 >
-                  {data.sentence}{" "}
-                  {lyric_curr_index === idx ? lyric_parts_fa[idx].sentence : ""}
-                  <br />
+                  {data.sentence}
+                  <div style={{ fontSize: "small" }}>
+                    {lyric_curr_index === idx
+                      ? lyric_parts_fa[idx].sentence
+                      : ""}
+                  </div>
                   <br />
                 </ListItem>
               );
