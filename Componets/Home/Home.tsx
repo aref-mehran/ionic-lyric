@@ -7,10 +7,10 @@ import {
   IonCardTitle,
   IonContent,
   IonHeader,
-  IonList,
   IonPage,
   IonTitle,
-  IonToolbar
+  IonToolbar,
+  IonTabButton
 } from "@ionic/react";
 //import ExploreContainer from "../components/ExploreContainer";
 import "./Tab1.css";
@@ -32,11 +32,10 @@ const Home: React.FC = (props) => {
       <IonContent fullscreen>
         {songsList.map((song) => {
           return (
-            <>
+            <Link to="/Player" state={{ songId: song.id }}>
               <IonCard className="weather-box">
                 <IonCardHeader>
                   <IonCardTitle>{song.title}</IonCardTitle>
-                  <Link to="/Player"></Link>
 
                   <IonCardContent>
                     <h1>{song.title}</h1>
@@ -44,7 +43,7 @@ const Home: React.FC = (props) => {
                   </IonCardContent>
                 </IonCardHeader>
               </IonCard>
-            </>
+            </Link>
           );
         })}
       </IonContent>

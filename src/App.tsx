@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 import {
   IonApp,
   IonIcon,
@@ -12,7 +12,6 @@ import {
 import { IonReactRouter } from "@ionic/react-router";
 import { home, apps, map, person } from "ionicons/icons";
 import Home from "../Componets/Home/Home";
-import AppMenu from "../Componets/Apps/TabAppMenu";
 import Player from "../Componets/Player";
 import Cabinet from "../Componets/LK/LK";
 //import React from "react";
@@ -50,9 +49,6 @@ const App: React.FC = () => (
         <IonRouterOutlet>
           <Route exact path="/tab1">
             <Home />
-          </Route>
-          <Route exact path="/tab2">
-            <AppMenu />
           </Route>
           <Route path="/player">
             <Player />

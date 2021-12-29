@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useRef, useLayoutEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 import textfile from "../src/assets/count_me.txt";
 import textfile_fa from "../src/assets/count_me_fa.txt";
@@ -43,6 +44,8 @@ const Player: React.FC = () => {
 
   const [lyric_curr_index, set_lyric_curr_index] = React.useState(0);
   const [isLoading, setLoading] = React.useState(true);
+  const location = useLocation();
+  console.log(location);
 
   function setCurrentLyric() {
     let playerEl = document.getElementById("playerId");
