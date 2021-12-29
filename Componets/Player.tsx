@@ -173,9 +173,7 @@ const Player: React.FC = () => {
               color="black"
               fontStyle="italic"
               opacity={0.87}
-            >
-              list
-            </ListItem>
+            ></ListItem>
           </List>
         </SimpleGrid>
       </ChakraProvider>
