@@ -47,7 +47,6 @@ const Player: React.FC = () => {
     let tempTime = playerEl.currentTime;
     let index = 0;
 
-    console.log(lyric_parts);
     let lyric_time_arr = lyric_parts.map((data) => {
       return data.seek_time;
     });
@@ -69,7 +68,6 @@ const Player: React.FC = () => {
         inline: "nearest"
       });
     }
-    console.log(index, tempTime);
   }
 
   //https://usehooks-ts.com/react-hook/use-interval
