@@ -42,6 +42,7 @@ const Player: React.FC = () => {
   const [lyric_parts_fa, set_lyric_parts_fa] = React.useState([]);
 
   const [lyric_curr_index, set_lyric_curr_index] = React.useState(0);
+  const [isLoading, setLoading] = React.useState(true);
 
   function setCurrentLyric() {
     let playerEl = document.getElementById("playerId");
@@ -73,19 +74,6 @@ const Player: React.FC = () => {
       });
     }
   }
-
-  //https://usehooks-ts.com/react-hook/use-interval
-  useInterval(() => {
-    setCurrentLyric();
-  }, 500);
-
-  // useEffect(() => {
-
-  //   // clearing interval
-  //   // return () => {clearInterval(timer);alert('clreaed')};
-  // }, []);
-
-  const [isLoading, setLoading] = React.useState(true);
   async function readLyricFile(file) {
     let response = await fetch(file);
     let txt_content = await response.text();
@@ -103,6 +91,17 @@ const Player: React.FC = () => {
 
     return arr;
   }
+  //https://usehooks-ts.com/react-hook/use-interval
+  useInterval(() => {
+    setCurrentLyric();
+  }, 500);
+
+  // useEffect(() => {
+
+  //   // clearing interval
+  //   // return () => {clearInterval(timer);alert('clreaed')};
+  // }, []);
+
   useEffect(() => {
     async function fetchLyric() {
       let arr = await readLyricFile(textfile);

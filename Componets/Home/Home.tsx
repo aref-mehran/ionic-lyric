@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   IonCard,
   IonCardContent,
@@ -14,42 +15,38 @@ import {
 //import ExploreContainer from "../components/ExploreContainer";
 import "./Tab1.css";
 
-const Home: React.FC = () => {
+const songsList = [
+  { id: 1, title: "count on you" },
+  { id: 2, title: "shakira" },
+  { id: 3, title: "catty perry" }
+];
+
+const Home: React.FC = (props) => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Полезная информация</IonTitle>
+          <IonTitle>لیست آهنگ ها</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonCard className="weather-box">
-          <IonCardHeader>
-            <IonCardTitle>Погода</IonCardTitle>
-            <IonCardContent>
-              <h1>Чита</h1>
-              <h1>+8</h1>
-            </IonCardContent>
-          </IonCardHeader>
-        </IonCard>
-        <IonCard>
-          <IonCardHeader>
-            <IonCardTitle>Новости</IonCardTitle>
-            <IonCardContent>
-              <h1>Чита</h1>
-              <IonList></IonList>
-            </IonCardContent>
-          </IonCardHeader>
-        </IonCard>
-        <IonCard>
-          <IonCardHeader>
-            <IonCardTitle>Афиша</IonCardTitle>
-            <IonCardContent>
-              <h1>Чита</h1>
-              <IonList></IonList>
-            </IonCardContent>
-          </IonCardHeader>
-        </IonCard>
+        {songsList.map((song) => {
+          return (
+            <>
+              <IonCard className="weather-box">
+                <IonCardHeader>
+                  <IonCardTitle>{song.title}</IonCardTitle>
+                  <Link to="/Player"></Link>
+
+                  <IonCardContent>
+                    <h1>{song.title}</h1>
+                    <h1>{song.id}</h1>
+                  </IonCardContent>
+                </IonCardHeader>
+              </IonCard>
+            </>
+          );
+        })}
       </IonContent>
     </IonPage>
   );
