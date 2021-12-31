@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 
 import textfile from "../src/assets/count_me.txt";
 import textfile_fa from "../src/assets/count_me_fa.txt";
@@ -91,7 +92,7 @@ class Player2 extends React.Component<any, any> {
 
   async componentDidMount() {
     alert("componentDidMount");
-    alert(this.props.location.state.src);
+    console.log(this);
 
     // let interalId = setInterval(() => {
     //   this.setCurrentLyric();
@@ -122,7 +123,7 @@ class Player2 extends React.Component<any, any> {
             <Box ml="25%" mr="25%">
               <audio
                 id="playerId"
-                src={this.props.location.state.src}
+                src="{this.props.location.state.src}"
                 controls
                 loop
                 // autoPlay
@@ -182,4 +183,4 @@ class Player2 extends React.Component<any, any> {
     );
   }
 }
-export default Player2;
+export default withRouter(Player2);
