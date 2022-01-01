@@ -63,6 +63,9 @@ class Player2 extends React.Component<any, any> {
 
   setCurrentLyric() {
     let playerEl = this.getAudioElement();
+    if (!playerEl) {
+      return;
+    }
     console.log(playerEl);
     if (playerEl.paused) {
       return;
