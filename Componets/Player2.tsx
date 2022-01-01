@@ -109,8 +109,10 @@ class Player2 extends React.Component<any, any> {
   }
 
   componentWillUnmount() {
-    alert("componentWillUnmount");
+    console.log(this.state.intervalId);
     clearInterval(this.state.intervalId);
+
+    alert("componentWillUnmount");
   }
 
   render() {
