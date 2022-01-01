@@ -123,7 +123,7 @@ class Player2 extends React.Component<any, any> {
             <Box ml="25%" mr="25%">
               <audio
                 id="playerId"
-                src="{this.props.location.state.src}"
+                src={this.props.location.state.src}
                 controls
                 loop
                 // autoPlay
