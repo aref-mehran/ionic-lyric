@@ -49,6 +49,9 @@ const Player: React.FC = () => {
 
   function setCurrentLyric() {
     let playerEl = document.getElementById("playerId");
+    if (!playerEl) {
+      return;
+    }
     if (playerEl.paused) {
       return;
     }

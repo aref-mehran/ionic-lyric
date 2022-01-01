@@ -22,8 +22,10 @@ class Player2 extends React.Component<any, any> {
       lyric_parts: [],
       lyric_parts_fa: [],
       lyric_curr_index: 0,
+      isLoading: true,
       intervalId: 0
     };
+    this.fetchLyric();
   }
   static async getDerivedStateFromProps() {}
 
@@ -46,6 +48,7 @@ class Player2 extends React.Component<any, any> {
   }
   async fetchLyric() {
     let arr = await this.readLyricFile(textfile);
+
     this.setState({ lyric_parts: arr });
 
     let arr_fa = await this.readLyricFile(textfile_fa);
@@ -60,6 +63,7 @@ class Player2 extends React.Component<any, any> {
 
   setCurrentLyric() {
     let playerEl = this.getAudioElement();
+    console.log(playerEl);
     if (playerEl.paused) {
       return;
     }
@@ -94,14 +98,14 @@ class Player2 extends React.Component<any, any> {
     alert("componentDidMount");
     console.log(this);
 
-    // let interalId = setInterval(() => {
-    //   this.setCurrentLyric();
-    // }, 1000);
-    // this.setState({ interalId: interalId });
+    let interalId = setInterval(() => {
+      this.setCurrentLyric();
+    }, 1000);
+    this.setState({ interalId: interalId });
   }
 
   componentDidUpdate() {
-    alert("componentDidUpdate");
+    // alert("componentDidUpdate");
   }
 
   componentWillUnmount() {
@@ -110,7 +114,7 @@ class Player2 extends React.Component<any, any> {
   }
 
   render() {
-    alert("player2 render");
+    if (this.state.isLoading) return "Loading...";
     return (
       <IonPage>
         <IonHeader>
