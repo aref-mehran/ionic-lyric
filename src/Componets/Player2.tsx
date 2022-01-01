@@ -1,8 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import textfile from "../src/assets/count_me.txt";
-import textfile_fa from "../src/assets/count_me_fa.txt";
+import textfile from "../assets/count_me.txt";
+import textfile_fa from "../assets/count_me_fa.txt";
 
 import {
   ChakraProvider,

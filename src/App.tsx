@@ -11,11 +11,11 @@ import {
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { home, apps, map, person } from "ionicons/icons";
-import Home from "../Componets/Home/Home";
+import Home from "./Componets/Home/Home";
 // import Player from "../Componets/Player";
-import Player2 from "../Componets/Player2";
+import Player2 from "./Componets/Player2";
 
-import Cabinet from "../Componets/LK/LK";
+import Cabinet from "./Componets/LK/LK";
 //import React from "react";
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
