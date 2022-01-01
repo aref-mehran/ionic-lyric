@@ -101,10 +101,10 @@ class Player2 extends React.Component<any, any> {
     alert("componentDidMount");
     console.log(this);
 
-    let interalId = setInterval(() => {
+    let intervalId = setInterval(() => {
       this.setCurrentLyric();
     }, 1000);
-    this.setState({ interalId: interalId });
+    this.setState({ intervalId: intervalId });
   }
 
   componentDidUpdate() {
