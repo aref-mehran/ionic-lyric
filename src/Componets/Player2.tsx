@@ -1,9 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import textfile from "../assets/count_me.txt";
-import textfile_fa from "../assets/count_me_fa.txt";
-
 import {
   ChakraProvider,
   SimpleGrid,
@@ -47,6 +44,9 @@ class Player2 extends React.Component<any, any> {
     return arr;
   }
   async fetchLyric() {
+    import textfile from "../assets/count_me.txt";
+    import textfile_fa from "../assets/count_me_fa.txt";
+
     let arr = await this.readLyricFile(textfile);
 
     this.setState({ lyric_parts: arr });

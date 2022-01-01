@@ -1,5 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
+import soundfile from ‘../assets/alert.mp3’
+
 import {
   IonCard,
   IonCardContent,
@@ -18,8 +21,11 @@ const songsList = [
   {
     id: 1,
     title: "count on you",
+    lyric:"../assets/count_me.txt",
+    lyric_fa:"../assets/count_me_fa.txt",
+
     src:
-      "https://dl.musicdel.ir/Music/1400/05/bruno_mars_count_on%20me%20128.mp3"
+      "../assets/count_me_fa.mp3"
   },
   {
     id: 2,
