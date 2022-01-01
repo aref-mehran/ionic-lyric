@@ -44,14 +44,13 @@ class Player2 extends React.Component<any, any> {
     return arr;
   }
   async fetchLyric() {
-    import textfile from "../assets/count_me.txt";
-    import textfile_fa from "../assets/count_me_fa.txt";
-
-    let arr = await this.readLyricFile(textfile);
+    let arr = await this.readLyricFile(this.props.location.state.lyric_file);
 
     this.setState({ lyric_parts: arr });
 
-    let arr_fa = await this.readLyricFile(textfile_fa);
+    let arr_fa = await this.readLyricFile(
+      this.props.location.state.lyric_fa_file
+    );
     this.setState({ lyric_parts_fa: arr_fa });
     this.setState({ isLoading: false });
   }
@@ -120,7 +119,7 @@ class Player2 extends React.Component<any, any> {
 
   render() {
     try {
-      this.props.location.state.src;
+      this.props.location.state.src_file;
     } catch (error) {
       return null;
     }
@@ -138,7 +137,7 @@ class Player2 extends React.Component<any, any> {
             <Box ml="25%" mr="25%">
               <audio
                 id="playerId"
-                src={this.props.location.state.src}
+                src={this.props.location.state.src_file}
                 controls
                 loop
                 // autoPlay

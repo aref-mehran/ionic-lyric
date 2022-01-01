@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import soundfile from ‘../assets/alert.mp3’
+import lyric_file from "../../assets/count_me.txt";
+import lyric_fa_file from "../../assets/count_me_fa.txt";
+import src_file from "../../assets/count_me.mp3";
 
 import {
   IonCard,
@@ -21,11 +23,10 @@ const songsList = [
   {
     id: 1,
     title: "count on you",
-    lyric:"../assets/count_me.txt",
-    lyric_fa:"../assets/count_me_fa.txt",
+    lyric_file: lyric_file,
+    lyric_fa_file: lyric_fa_file,
 
-    src:
-      "../assets/count_me_fa.mp3"
+    src_file: src_file
   },
   {
     id: 2,
