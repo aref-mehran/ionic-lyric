@@ -119,6 +119,12 @@ class Player2 extends React.Component<any, any> {
   }
 
   render() {
+    try {
+      this.props.location.state.src;
+    } catch (error) {
+      return null;
+    }
+
     if (this.state.isLoading) return "Loading...";
     return (
       <IonPage>
