@@ -111,35 +111,9 @@ class Player2 extends React.Component<any, any> {
 
     let songs = await db.songs.toArray();
 
+    let blob = songs[0].image;
+    songs[0].url = URL.createObjectURL(blob);
     this.setState({ songs: songs });
-    console.log(songs);
-    let blob = this.state.songs[0]?.image;
-    console.log(URL.createObjectURL(blob));
-
-    var urlCreator = window.URL || window.webkitURL;
-    var imageUrl = urlCreator.createObjectURL(blob);
-    console.log(imageUrl);
-
-    var file = new File([this.state.songs[0]?.image], "name");
-    console.log(file);
-    function saveFile(blob, filename) {
-      if (window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(blob, filename);
-      } else {
-        const a = document.createElement("a");
-        document.body.appendChild(a);
-        const url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = filename;
-        a.click();
-        setTimeout(() => {
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(a);
-        }, 0);
-      }
-    }
-
-    saveFile(blob, "aa.png");
   }
 
   componentDidUpdate() {
@@ -177,7 +151,7 @@ class Player2 extends React.Component<any, any> {
                 // autoPlay
               />
               {this.state.songs[0]?.image.size}
-              <img src={this.state.songs[0]?.image} />
+              <img src={this.state.songs[0]?.url} />
             </Box>
           </SimpleGrid>
           <SimpleGrid
