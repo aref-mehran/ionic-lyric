@@ -44,6 +44,7 @@ const appssDefault = [
   { id: 5, title: "Голосования" }
 ];
 */
+
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>

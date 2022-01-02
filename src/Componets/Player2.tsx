@@ -1,6 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
+import Dexie from "dexie";
 import {
   ChakraProvider,
   SimpleGrid,
@@ -11,6 +12,11 @@ import {
 
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 
+let db = new Dexie("MySongDb");
+db.version(1).stores({
+  songs: "name"
+});
+
 class Player2 extends React.Component<any, any> {
   constructor(props) {
     super(props);
@@ -20,7 +26,8 @@ class Player2 extends React.Component<any, any> {
       lyric_parts_fa: [],
       lyric_curr_index: 0,
       isLoading: true,
-      intervalId: 0
+      intervalId: 0,
+      songs: []
     };
     this.fetchLyric();
   }
@@ -101,6 +108,38 @@ class Player2 extends React.Component<any, any> {
       this.setCurrentLyric();
     }, 1000);
     this.setState({ intervalId: intervalId });
+
+    let songs = await db.songs.toArray();
+
+    this.setState({ songs: songs });
+    console.log(songs);
+    let blob = this.state.songs[0]?.image;
+    console.log(URL.createObjectURL(blob));
+
+    var urlCreator = window.URL || window.webkitURL;
+    var imageUrl = urlCreator.createObjectURL(blob);
+    console.log(imageUrl);
+
+    var file = new File([this.state.songs[0]?.image], "name");
+    console.log(file);
+    function saveFile(blob, filename) {
+      if (window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(blob, filename);
+      } else {
+        const a = document.createElement("a");
+        document.body.appendChild(a);
+        const url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = filename;
+        a.click();
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        }, 0);
+      }
+    }
+
+    saveFile(blob, "aa.png");
   }
 
   componentDidUpdate() {
@@ -137,6 +176,8 @@ class Player2 extends React.Component<any, any> {
                 loop
                 // autoPlay
               />
+              {this.state.songs[0]?.image.size}
+              <img src={this.state.songs[0]?.image} />
             </Box>
           </SimpleGrid>
           <SimpleGrid
