@@ -2,20 +2,25 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 
 import Dexie from "dexie";
+import { liveQuery } from "dexie";
+import db from "./db";
+
 import {
   ChakraProvider,
   SimpleGrid,
   List,
   ListItem,
-  Box
+  Box,
+  Button,
+  IconButton
 } from "@chakra-ui/react";
+import { DownloadIcon } from "@chakra-ui/icons";
 
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 
-let db = new Dexie("MySongDb");
-db.version(1).stores({
-  songs: "name"
-});
+const observable = liveQuery(
+  () => db.songs.toArray() // A promise-returning function that queries Dexie.
+);
 
 class Player2 extends React.Component<any, any> {
   constructor(props) {
@@ -27,10 +32,60 @@ class Player2 extends React.Component<any, any> {
       lyric_curr_index: 0,
       isLoading: true,
       intervalId: 0,
-      songs: []
+      songs: [],
+      db_songs: [],
+      db_errors: []
     };
+
     this.fetchLyric();
   }
+
+  async componentDidMount() {
+    let intervalId = setInterval(() => {
+      this.setCurrentLyric();
+    }, 1000);
+
+    this.subscription = observable.subscribe(
+      (result) => {
+        this.setState({ db_songs: result });
+        alert("new observe");
+      },
+      (error) => this.setState({ db_errors: error })
+    );
+
+    this.setState({ intervalId: intervalId });
+
+    let songs = await db.songs.toArray();
+
+    let blob = songs[0].image;
+    songs[0].url = URL.createObjectURL(blob);
+    this.setState({ songs: songs });
+  }
+
+  componentDidUpdate() {
+    // alert("componentDidUpdate");
+  }
+
+  componentWillUnmount() {
+    console.log(this.state.intervalId);
+    clearInterval(this.state.intervalId);
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      this.subscription = null;
+    }
+  }
+
+  // Download and store an image
+  async downloadAndStore(song_name, url) {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    // Store the binary data in indexedDB:
+    await db.songs.put({
+      song_name: song_name,
+      song_data: blob
+    });
+  }
+
   static async getDerivedStateFromProps() {}
 
   async readLyricFile(file) {
@@ -103,35 +158,7 @@ class Player2 extends React.Component<any, any> {
     }
   }
 
-  async componentDidMount() {
-    let intervalId = setInterval(() => {
-      this.setCurrentLyric();
-    }, 1000);
-    this.setState({ intervalId: intervalId });
-
-    let songs = await db.songs.toArray();
-
-    let blob = songs[0].image;
-    songs[0].url = URL.createObjectURL(blob);
-    this.setState({ songs: songs });
-  }
-
-  componentDidUpdate() {
-    // alert("componentDidUpdate");
-  }
-
-  componentWillUnmount() {
-    console.log(this.state.intervalId);
-    clearInterval(this.state.intervalId);
-  }
-
   render() {
-    try {
-      this.props.location.state.src_file;
-    } catch (error) {
-      return null;
-    }
-
     if (this.state.isLoading) return "Loading...";
     return (
       <IonPage>
@@ -142,16 +169,28 @@ class Player2 extends React.Component<any, any> {
         </IonHeader>
         <ChakraProvider resetCSS>
           <SimpleGrid columns={2} spacingX={1} spacingY={1}>
-            <Box ml="25%" mr="25%">
+            <Box>
               <audio
                 id="playerId"
-                src={this.props.location.state.src_file}
+                src={this.props.location.state.src}
                 controls
                 loop
+                controlsList="nodownload"
                 // autoPlay
               />
-              {this.state.songs[0]?.image.size}
-              <img src={this.state.songs[0]?.url} />
+            </Box>
+            <Box>
+              <IconButton
+                aria-label="download"
+                icon={<DownloadIcon />}
+                size="md"
+                onClick={() => {
+                  this.downloadAndStore(
+                    this.props.location.state.title,
+                    this.props.location.state.src
+                  );
+                }}
+              />
             </Box>
           </SimpleGrid>
           <SimpleGrid
