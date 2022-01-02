@@ -182,6 +182,7 @@ class Player2 extends React.Component<any, any> {
                 controlsList="nodownload"
                 // autoPlay
               />
+              {JSON.stringify(this.state.db_songs)}
             </Box>
             <Box>
               <IconButton
