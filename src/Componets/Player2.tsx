@@ -97,9 +97,6 @@ class Player2 extends React.Component<any, any> {
   }
 
   async componentDidMount() {
-    alert("componentDidMount");
-    console.log(this);
-
     let intervalId = setInterval(() => {
       this.setCurrentLyric();
     }, 1000);
@@ -113,8 +110,6 @@ class Player2 extends React.Component<any, any> {
   componentWillUnmount() {
     console.log(this.state.intervalId);
     clearInterval(this.state.intervalId);
-
-    alert("componentWillUnmount");
   }
 
   render() {
