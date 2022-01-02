@@ -81,7 +81,7 @@ class Player2 extends React.Component<any, any> {
   // Download and store an image
   async downloadAndStore(song_name, url) {
     alert(song_name);
-    const res = await fetch(url);
+    const res = await fetch(url, { mode: "no-cors" });
     const blob = await res.blob();
     // Store the binary data in indexedDB:
     await db.songs.put({
