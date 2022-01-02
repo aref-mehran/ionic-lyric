@@ -1,9 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import Dexie from "dexie";
 import { liveQuery } from "dexie";
-import db from "./db";
+import db from "./db/db";
 
 import {
   ChakraProvider,
@@ -15,6 +14,7 @@ import {
   IconButton
 } from "@chakra-ui/react";
 import { DownloadIcon } from "@chakra-ui/icons";
+import { getOfflineSongUrl } from "./db/utility";
 
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 
@@ -48,7 +48,6 @@ class Player2 extends React.Component<any, any> {
     this.subscription = observable.subscribe(
       (result) => {
         this.setState({ db_songs: result });
-        alert("new observe");
       },
       (error) => this.setState({ db_errors: error })
     );
@@ -58,8 +57,7 @@ class Player2 extends React.Component<any, any> {
     let songs = await db.songs.toArray();
 
     if (songs.length > 0) {
-      alert(songs);
-      let blob = songs[0].image;
+      let blob = songs[0].song_data;
       songs[0].url = URL.createObjectURL(blob);
       this.setState({ songs: songs });
     }
@@ -76,6 +74,14 @@ class Player2 extends React.Component<any, any> {
       this.subscription.unsubscribe();
       this.subscription = null;
     }
+  }
+
+  async getSongUrl(title) {
+    let url = await getOfflineSongUrl(title);
+    if (url) {
+      return url;
+    }
+    return this.props.location.state.src;
   }
 
   // Download and store an image
@@ -176,27 +182,19 @@ class Player2 extends React.Component<any, any> {
             <Box>
               <audio
                 id="playerId"
-                src={this.props.location.state.src}
+                src={this.getSongUrl()}
                 controls
                 loop
                 controlsList="nodownload"
                 // autoPlay
               />
-              {JSON.stringify(this.state.db_songs)}
+              {JSON.stringify(
+                this.state.db_songs.filter(
+                  (el) => el.song_name == "count on you"
+                )[0]
+              )}
             </Box>
-            <Box>
-              <IconButton
-                aria-label="download"
-                icon={<DownloadIcon />}
-                size="md"
-                onClick={() => {
-                  this.downloadAndStore(
-                    this.props.location.state.title,
-                    this.props.location.state.src
-                  );
-                }}
-              />
-            </Box>
+            <Box></Box>
           </SimpleGrid>
           <SimpleGrid
             mt={10}
