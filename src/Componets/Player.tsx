@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 
 import Dexie from "dexie";
+
 import {
   ChakraProvider,
   SimpleGrid,
@@ -17,6 +18,7 @@ db.version(1).stores({
   songs: "name"
 });
 
+
 class Player extends React.Component<any, any> {
   constructor(props) {
     super(props);
@@ -31,6 +33,7 @@ class Player extends React.Component<any, any> {
     };
     this.fetchLyric();
   }
+
   static async getDerivedStateFromProps() {}
 
   async readLyricFile(file) {
@@ -132,6 +135,7 @@ class Player extends React.Component<any, any> {
       return null;
     }
 
+
     if (this.state.isLoading) return "Loading...";
     return (
       <IonPage>
@@ -153,6 +157,7 @@ class Player extends React.Component<any, any> {
               {this.state.songs[0]?.image.size}
               <img src={this.state.songs[0]?.url} />
             </Box>
+
           </SimpleGrid>
           <SimpleGrid
             mt={10}

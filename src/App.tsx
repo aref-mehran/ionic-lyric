@@ -12,6 +12,7 @@ import {
 import { IonReactRouter } from "@ionic/react-router";
 import { home, map } from "ionicons/icons";
 import Home from "./Componets/Home/Home";
+
 import Player from "./Componets/Player";
 
 //import React from "react";
@@ -55,6 +56,7 @@ const App: React.FC = () => (
             <Route path="/player">
               <Player />
             </Route>
+
             <Route exact path="/">
               <Redirect to="/tab1" />
             </Route>
