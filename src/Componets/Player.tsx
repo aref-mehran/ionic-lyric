@@ -1,10 +1,7 @@
 import React from "react";
-import { useEffect, useRef, useLayoutEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
-import textfile from "../src/assets/count_me.txt";
-import textfile_fa from "../src/assets/count_me_fa.txt";
-
+import Dexie from "dexie";
 import {
   ChakraProvider,
   SimpleGrid,
@@ -14,73 +11,29 @@ import {
 } from "@chakra-ui/react";
 
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
-import { setInterval } from "timers";
 
-function useInterval(callback: () => void, delay: number | null) {
-  const savedCallback = useRef(callback);
+let db = new Dexie("MySongDb");
+db.version(1).stores({
+  songs: "name"
+});
 
-  // Remember the latest callback if it changes.
-  useLayoutEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
+class Player extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
 
-  // Set up the interval.
-  useEffect(() => {
-    // Don't schedule if no delay is specified.
-    // Note: 0 is a valid value for delay.
-    if (!delay && delay !== 0) {
-      return;
-    }
-
-    const id = setInterval(() => savedCallback.current(), delay);
-
-    return () => clearInterval(id);
-  }, [delay]);
-}
-
-const Player: React.FC = () => {
-  const [lyric_parts, set_lyric_parts] = React.useState([]);
-  const [lyric_parts_fa, set_lyric_parts_fa] = React.useState([]);
-
-  const [lyric_curr_index, set_lyric_curr_index] = React.useState(0);
-  const [isLoading, setLoading] = React.useState(true);
-  const location = useLocation();
-  console.log(location);
-
-  function setCurrentLyric() {
-    let playerEl = document.getElementById("playerId");
-    if (!playerEl) {
-      return;
-    }
-    if (playerEl.paused) {
-      return;
-    }
-    let tempTime = playerEl.currentTime;
-    let index = 0;
-
-    let lyric_time_arr = lyric_parts.map((data) => {
-      return data.seek_time;
-    });
-
-    if (lyric_time_arr.indexOf(tempTime) === -1) {
-      index =
-        [...lyric_time_arr, tempTime].sort((a, b) => a - b).indexOf(tempTime) -
-        1;
-    } else {
-      index = lyric_time_arr.indexOf(tempTime);
-    }
-    set_lyric_curr_index(index);
-
-    let el = document.getElementById("item" + index);
-    if (el) {
-      el.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "nearest"
-      });
-    }
+    this.state = {
+      lyric_parts: [],
+      lyric_parts_fa: [],
+      lyric_curr_index: 0,
+      isLoading: true,
+      intervalId: 0,
+      songs: []
+    };
+    this.fetchLyric();
   }
-  async function readLyricFile(file) {
+  static async getDerivedStateFromProps() {}
+
+  async readLyricFile(file) {
     let response = await fetch(file);
     let txt_content = await response.text();
     let lyric_lines = txt_content.split("\n");
@@ -97,93 +50,161 @@ const Player: React.FC = () => {
 
     return arr;
   }
-  //https://usehooks-ts.com/react-hook/use-interval
-  useInterval(() => {
-    setCurrentLyric();
-  }, 500);
+  async fetchLyric() {
+    let arr = await this.readLyricFile(this.props.location.state.lyric_file);
 
-  // useEffect(() => {
+    this.setState({ lyric_parts: arr });
 
-  //   // clearing interval
-  //   // return () => {clearInterval(timer);alert('clreaed')};
-  // }, []);
+    let arr_fa = await this.readLyricFile(
+      this.props.location.state.lyric_fa_file
+    );
+    this.setState({ lyric_parts_fa: arr_fa });
+    this.setState({ isLoading: false });
+  }
 
-  useEffect(() => {
-    async function fetchLyric() {
-      let arr = await readLyricFile(textfile);
-      set_lyric_parts(arr);
+  getAudioElement() {
+    let ad = document.getElementById("playerId") as HTMLAudioElement;
+    return ad;
+  }
 
-      let arr_fa = await readLyricFile(textfile_fa);
-      set_lyric_parts_fa(arr_fa);
-
-      setLoading(false);
+  setCurrentLyric() {
+    let playerEl = this.getAudioElement();
+    if (!playerEl) {
+      return;
     }
-    fetchLyric();
-  }, []);
+    console.log(playerEl);
+    if (playerEl.paused) {
+      return;
+    }
+    let tempTime = playerEl.currentTime;
+    let index = 0;
 
-  if (isLoading) return "Loading...";
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>پخش آهنگ</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <ChakraProvider resetCSS>
-        <SimpleGrid columns={2} spacingX={1} spacingY={1}>
-          <Box ml="25%" mr="25%">
-            <audio
-              id="playerId"
-              src="https://dl.musicdel.ir/Music/1400/05/bruno_mars_count_on%20me%20128.mp3"
-              controls
-              loop
-              // autoPlay
-            />
-          </Box>
-        </SimpleGrid>
-        <SimpleGrid mt={10} columns={1} spacingX={1} spacingY={1} height={400}>
-          <List overflow="scroll">
-            {lyric_parts.map((data, idx) => {
-              return (
-                <ListItem
-                  key={idx}
-                  id={"item" + idx}
-                  fontWeight="bold"
-                  textAlign="center"
-                  fontSize={20}
-                  color={lyric_curr_index === idx ? "green" : "black"}
-                  fontStyle="italic"
-                  value="frfr"
-                  cursor="pointer"
-                  onClick={async (e) => {
-                    let s = document.getElementById("playerId");
-                    s.currentTime = data.seek_time;
-                    s.play();
-                  }}
-                >
-                  {data.sentence}
-                  <div style={{ fontSize: "small" }}>
-                    {lyric_curr_index === idx
-                      ? lyric_parts_fa[idx].sentence
-                      : ""}
-                  </div>
-                  <br />
-                </ListItem>
-              );
-            })}
-            <ListItem
-              fontWeight="bold"
-              textAlign="center"
-              fontSize={20}
-              color="black"
-              fontStyle="italic"
-              opacity={0.87}
-            ></ListItem>
-          </List>
-        </SimpleGrid>
-      </ChakraProvider>
-    </IonPage>
-  );
-};
+    let lyric_time_arr = this.state.lyric_parts.map((data) => {
+      return data.seek_time;
+    });
 
-export default Player;
+    if (lyric_time_arr.indexOf(tempTime) === -1) {
+      index =
+        [...lyric_time_arr, tempTime].sort((a, b) => a - b).indexOf(tempTime) -
+        1;
+    } else {
+      index = lyric_time_arr.indexOf(tempTime);
+    }
+
+    this.setState({ lyric_curr_index: index });
+
+    let el = document.getElementById("item" + index);
+    if (el) {
+      el.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest"
+      });
+    }
+  }
+
+  async componentDidMount() {
+    let intervalId = setInterval(() => {
+      this.setCurrentLyric();
+    }, 1000);
+    this.setState({ intervalId: intervalId });
+
+    let songs = await db.songs.toArray();
+
+    let blob = songs[0].image;
+    songs[0].url = URL.createObjectURL(blob);
+    this.setState({ songs: songs });
+  }
+
+  componentDidUpdate() {
+    // alert("componentDidUpdate");
+  }
+
+  componentWillUnmount() {
+    console.log(this.state.intervalId);
+    clearInterval(this.state.intervalId);
+  }
+
+  render() {
+    try {
+      this.props.location.state.src_file;
+    } catch (error) {
+      return null;
+    }
+
+    if (this.state.isLoading) return "Loading...";
+    return (
+      <IonPage>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>پخش آهنگ</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <ChakraProvider resetCSS>
+          <SimpleGrid columns={2} spacingX={1} spacingY={1}>
+            <Box ml="25%" mr="25%">
+              <audio
+                id="playerId"
+                src={this.props.location.state.src_file}
+                controls
+                loop
+                // autoPlay
+              />
+              {this.state.songs[0]?.image.size}
+              <img src={this.state.songs[0]?.url} />
+            </Box>
+          </SimpleGrid>
+          <SimpleGrid
+            mt={10}
+            columns={1}
+            spacingX={1}
+            spacingY={1}
+            height={400}
+          >
+            <List overflow="scroll">
+              {this.state.lyric_parts.map((data, idx) => {
+                return (
+                  <ListItem
+                    key={idx}
+                    id={"item" + idx}
+                    fontWeight="bold"
+                    textAlign="center"
+                    fontSize={20}
+                    color={
+                      this.state.lyric_curr_index === idx ? "green" : "black"
+                    }
+                    fontStyle="italic"
+                    value="frfr"
+                    cursor="pointer"
+                    onClick={async (e) => {
+                      let s = this.getAudioElement();
+                      s.currentTime = data.seek_time;
+                      s.play();
+                    }}
+                  >
+                    {data.sentence}
+                    <div style={{ fontSize: "small" }}>
+                      {this.state.lyric_curr_index === idx
+                        ? this.state.lyric_parts_fa[idx].sentence
+                        : ""}
+                    </div>
+                    <br />
+                  </ListItem>
+                );
+              })}
+              <ListItem
+                fontWeight="bold"
+                textAlign="center"
+                fontSize={20}
+                color="black"
+                fontStyle="italic"
+                opacity={0.87}
+              ></ListItem>
+            </List>
+          </SimpleGrid>
+        </ChakraProvider>
+      </IonPage>
+    );
+  }
+}
+export default withRouter(Player);
