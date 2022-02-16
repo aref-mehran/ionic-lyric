@@ -13,7 +13,7 @@ import { IonReactRouter } from "@ionic/react-router";
 import { home, map } from "ionicons/icons";
 import Home from "./Componets/Home/Home";
 // import Player from "../Componets/Player";
-import Player2 from "./Componets/Player2";
+import Player from "./Componets/Player";
 
 //import React from "react";
 /* Core CSS required for Ionic components to work properly */
@@ -54,7 +54,7 @@ const App: React.FC = () => (
               <Home />
             </Route>
             <Route path="/player">
-              <Player2 />
+              <Player />
             </Route>
 
             <Route exact path="/">

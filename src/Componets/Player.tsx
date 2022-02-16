@@ -22,7 +22,7 @@ const observable = liveQuery(
   () => db.songs.toArray() // A promise-returning function that queries Dexie.
 );
 
-class Player2 extends React.Component<any, any> {
+class Player extends React.Component<any, any> {
   constructor(props) {
     super(props);
 
@@ -249,4 +249,4 @@ class Player2 extends React.Component<any, any> {
     );
   }
 }
-export default withRouter(Player2);
+export default withRouter(Player);
