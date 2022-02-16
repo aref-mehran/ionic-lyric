@@ -12,7 +12,7 @@ import {
 import { IonReactRouter } from "@ionic/react-router";
 import { home, map } from "ionicons/icons";
 import Home from "./Componets/Home/Home";
-// import Player from "../Componets/Player";
+
 import Player from "./Componets/Player";
 
 //import React from "react";
@@ -67,6 +67,7 @@ const App: React.FC = () => (
             <IonIcon icon={home} />
             <IonLabel>خانه</IonLabel>
           </IonTabButton>
+
           <IonTabButton tab="Player" href="/Player">
             <IonIcon icon={map} />
             <IonLabel>پلیر</IonLabel>

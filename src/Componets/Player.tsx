@@ -1,26 +1,23 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import { liveQuery } from "dexie";
-import db from "./db/db";
+import Dexie from "dexie";
 
 import {
   ChakraProvider,
   SimpleGrid,
   List,
   ListItem,
-  Box,
-  Button,
-  IconButton
+  Box
 } from "@chakra-ui/react";
-import { DownloadIcon } from "@chakra-ui/icons";
-import { getOfflineSongUrl } from "./db/utility";
 
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 
-const observable = liveQuery(
-  () => db.songs.toArray() // A promise-returning function that queries Dexie.
-);
+let db = new Dexie("MySongDb");
+db.version(1).stores({
+  songs: "name"
+});
+
 
 class Player extends React.Component<any, any> {
   constructor(props) {
@@ -32,68 +29,9 @@ class Player extends React.Component<any, any> {
       lyric_curr_index: 0,
       isLoading: true,
       intervalId: 0,
-      songs: [],
-      db_songs: [],
-      db_errors: []
+      songs: []
     };
-
     this.fetchLyric();
-  }
-
-  async componentDidMount() {
-    let intervalId = setInterval(() => {
-      this.setCurrentLyric();
-    }, 1000);
-
-    this.subscription = observable.subscribe(
-      (result) => {
-        this.setState({ db_songs: result });
-      },
-      (error) => this.setState({ db_errors: error })
-    );
-
-    this.setState({ intervalId: intervalId });
-
-    let songs = await db.songs.toArray();
-
-    if (songs.length > 0) {
-      let blob = songs[0].song_data;
-      songs[0].url = URL.createObjectURL(blob);
-      this.setState({ songs: songs });
-    }
-  }
-
-  componentDidUpdate() {
-    // alert("componentDidUpdate");
-  }
-
-  componentWillUnmount() {
-    console.log(this.state.intervalId);
-    clearInterval(this.state.intervalId);
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-      this.subscription = null;
-    }
-  }
-
-  async getSongUrl(title) {
-    let url = await getOfflineSongUrl(title);
-    if (url) {
-      return url;
-    }
-    return this.props.location.state.src;
-  }
-
-  // Download and store an image
-  async downloadAndStore(song_name, url) {
-    alert(song_name);
-    const res = await fetch(url, { mode: "no-cors" });
-    const blob = await res.blob();
-    // Store the binary data in indexedDB:
-    await db.songs.put({
-      song_name: song_name,
-      song_data: blob
-    });
   }
 
   static async getDerivedStateFromProps() {}
@@ -168,7 +106,36 @@ class Player extends React.Component<any, any> {
     }
   }
 
+  async componentDidMount() {
+    let intervalId = setInterval(() => {
+      this.setCurrentLyric();
+    }, 1000);
+    this.setState({ intervalId: intervalId });
+
+    let songs = await db.songs.toArray();
+
+    let blob = songs[0].image;
+    songs[0].url = URL.createObjectURL(blob);
+    this.setState({ songs: songs });
+  }
+
+  componentDidUpdate() {
+    // alert("componentDidUpdate");
+  }
+
+  componentWillUnmount() {
+    console.log(this.state.intervalId);
+    clearInterval(this.state.intervalId);
+  }
+
   render() {
+    try {
+      this.props.location.state.src_file;
+    } catch (error) {
+      return null;
+    }
+
+
     if (this.state.isLoading) return "Loading...";
     return (
       <IonPage>
@@ -179,22 +146,18 @@ class Player extends React.Component<any, any> {
         </IonHeader>
         <ChakraProvider resetCSS>
           <SimpleGrid columns={2} spacingX={1} spacingY={1}>
-            <Box>
+            <Box ml="25%" mr="25%">
               <audio
                 id="playerId"
-                src={this.getSongUrl()}
+                src={this.props.location.state.src_file}
                 controls
                 loop
-                controlsList="nodownload"
                 // autoPlay
               />
-              {JSON.stringify(
-                this.state.db_songs.filter(
-                  (el) => el.song_name == "count on you"
-                )[0]
-              )}
+              {this.state.songs[0]?.image.size}
+              <img src={this.state.songs[0]?.url} />
             </Box>
-            <Box></Box>
+
           </SimpleGrid>
           <SimpleGrid
             mt={10}
