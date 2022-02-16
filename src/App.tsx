@@ -10,12 +10,11 @@ import {
   IonTabs
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { home, apps, map, person } from "ionicons/icons";
+import { home, map } from "ionicons/icons";
 import Home from "./Componets/Home/Home";
 // import Player from "../Componets/Player";
 import Player2 from "./Componets/Player2";
 
-import Cabinet from "./Componets/LK/LK";
 //import React from "react";
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -57,9 +56,7 @@ const App: React.FC = () => (
             <Route path="/player">
               <Player2 />
             </Route>
-            <Route path="/tab4">
-              <Cabinet />
-            </Route>
+
             <Route exact path="/">
               <Redirect to="/tab1" />
             </Route>
@@ -70,17 +67,9 @@ const App: React.FC = () => (
             <IonIcon icon={home} />
             <IonLabel>خانه</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={apps} />
-            <IonLabel>آهنگ ها</IonLabel>
-          </IonTabButton>
           <IonTabButton tab="Player" href="/Player">
             <IonIcon icon={map} />
             <IonLabel>پلیر</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab4" href="/tab4">
-            <IonIcon icon={person} />
-            <IonLabel>پروفایل</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
